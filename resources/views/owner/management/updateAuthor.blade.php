@@ -19,6 +19,10 @@
         <input type="text" class="form-control" id="nameAuthor" name="first_name" value="{{$users_id->username}}" disabled>
       </div>
       <div class="col-md-4">
+        <label>Password</label>
+        <input type="text" class="form-control" id="password" name="password">
+      </div>
+      <div class="col-md-4">
         <label>Email</label>
         <input type="text" class="form-control" id="emailAuthor" name="email" value="{{$users_id->email}}" disabled>
       </div>
@@ -28,6 +32,7 @@
           <option selected>Choose...</option>
           <option value="1">Admin</option>          
           <option value="2">Reviewer</option>
+          <option value="3">Pemohon</option>
         </select>
       </div>
       <div class="col-md-4">

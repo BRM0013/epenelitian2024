@@ -108,11 +108,11 @@ class ManagementController extends Controller
 
       public function upAuthor(Request $request){
           $level = $request->level;
-
+          $password = $request->password;
           $users_id = Users::where("id",$request->id)->first();
-        
-
-          $users_id->level = $request->level;
+          
+          $users_id->level = $level;
+          $users_id->password = Hash::make ($password);
           $users_id->save();  
           if($users_id){
             $title = 'Success';
@@ -175,6 +175,22 @@ class ManagementController extends Controller
 
       } 
 
+      public function addUserPhm(Request $request)
+      {
+          $menu = MenuOwner::menuActive('mn_management');
+          $berita = Management_user::where("users_id",$request->id)->first();
+
+          $data = [
+            'title'=>'Tambah Data User Pemohon',
+            
+          ];
+          $data = array_merge($data,$menu);
+
+            $content = view('owner.management.createPhm',$data)->render();
+            return ['status'=>'success','content'=>$content];
+
+      } 
+
        public function docreatePkm(Request $request)
     {
         $validator=Validator::make($request->all(),[
@@ -210,6 +226,72 @@ class ManagementController extends Controller
       return Redirect::route('management_users');
              
     }
+    public function docreatePhm(Request $request)
+    {
+        // Validate the request
+        $validator = Validator::make($request->all(), [
+            'username' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'gender' => 'required',
+            'phone' => 'required',
+            'no_identitas' => 'required',
+        ]);
+    
+        // Check if validation fails
+        if ($validator->fails()) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors($validator->errors());
+        }
+    
+        // Create the User
+        $user = new User;
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->level = 3;
+        $user->is_banned = 0;
+        $user->save();
+    
+        if ($user) {
+            // Create the Pr
+            $profile = new Profile;
+            $profile->username = $request->username;
+            $profile->email = $request->email;
+            $profile->users_id = $user->id;
+            $profile->first_name= $request->first_name;
+            $profile->middle_name= $request->middle_name;
+            $profile->last_name= $request->last_name;
+            $profile->gender= $request->gender;
+            $profile->last_name= $request->phone;
+            $profile->no_identitas= $request->no_identitas;
+            $profile->phone= $request->phone;
+            $profile->password = Hash::make($request->password);
+            $profile->save();
+    
+            // Check if profile creation is successful
+            if ($profile) {
+                Session::flash('title', 'Success');
+                Session::flash('message', 'Berhasil disimpan');
+                Session::flash('type', 'success');
+            } else {
+                Session::flash('title', 'Whooops');
+                Session::flash('message', 'Gagal menyimpan profil');
+                Session::flash('type', 'error');
+            }
+        } else {
+            Session::flash('title', 'Whooops');
+            Session::flash('message', 'Gagal menyimpan pengguna');
+            Session::flash('type', 'error');
+        }
+    
+        return Redirect::route('management_users');
+    }
+    
 
     public function updatePkm(Request $request)
       {

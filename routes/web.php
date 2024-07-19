@@ -166,8 +166,10 @@ Route::group(['middleware'=>'admin'],function(){
         Route::post('/storeUpdatePkm','Owner\ManagementController@storeUpdatePkm')->name('storeUpdatePkm');
         
         Route::post('/doDeletePkm','Owner\ManagementController@doDeletePkm')->name('doDeletePkm');
+        Route::post('/addUserPhm','Owner\ManagementController@addUserPhm')->name('addUserPhm');
         Route::post('/addUserPkm','Owner\ManagementController@addUserPkm')->name('addUserPkm');
         Route::post('/docreatePkm','Owner\ManagementController@docreatePkm')->name('docreatePkm');
+        Route::post('/docreatePhm','Owner\ManagementController@docreatePhm')->name('docreatePhm');
         
       });
 
